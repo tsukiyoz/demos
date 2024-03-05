@@ -25,7 +25,11 @@ func TestContext(t *testing.T) {
 }
 
 func TestCancel(t *testing.T) {
+	// ctx := context.WithTimeout(context.Background(), time.Second * 3)
+	// ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Second))
 	ctx, cancel := context.WithCancel(context.Background())
+
+	// work listen quit signal and stop loop
 	go func(gCtx context.Context) {
 		i := 0
 		for {
@@ -40,6 +44,8 @@ func TestCancel(t *testing.T) {
 			}
 		}
 	}(ctx)
+
+	// control context to quit
 	time.Sleep(3 * time.Second)
 	cancel()
 }

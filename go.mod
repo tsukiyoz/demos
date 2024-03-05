@@ -1,4 +1,4 @@
-module demos
+module github.com/tsukaychan/demos
 
 go 1.21.4
 
