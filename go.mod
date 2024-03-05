@@ -10,6 +10,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.2
 	github.com/ecodeclub/ekit v0.0.8
 	github.com/gin-gonic/gin v1.9.1
+	github.com/google/uuid v1.6.0
+	github.com/lithammer/shortuuid v3.0.0+incompatible
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/exporters/zipkin v1.24.0
