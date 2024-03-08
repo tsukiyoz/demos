@@ -1,4 +1,4 @@
-package timer
+package time
 
 import (
 	"context"
@@ -22,13 +22,16 @@ func TestTimer(t *testing.T) {
 	timer := time.NewTimer(time.Second)
 	defer timer.Stop()
 
+loop:
 	for {
 		select {
 		case heartbeat := <-timer.C:
 			t.Logf("%v\n", heartbeat.Format(time.DateTime))
 		case <-ctx.Done():
 			t.Logf("context cancelled!\n")
-			return
+			break loop
 		}
 	}
+
+	t.Logf("finished!\n")
 }
