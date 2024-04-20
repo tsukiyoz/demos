@@ -1,0 +1,17 @@
+version: '3.0'
+services:
+  mongo:
+    image: mongo:6.0
+    volumes:
+      - ./mongodb.key:/data/mongodb.key
+    restart: no
+    command:
+      - --replSet
+      - mongos
+      - --keyFile
+      - /data/mongodb.key
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: for.nothing
+    ports:
+      - 27017:27017

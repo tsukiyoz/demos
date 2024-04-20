@@ -41,3 +41,14 @@ func NewMyJob() *MyJob {
 func (job *MyJob) Run() {
 	log.Printf("my job executed!")
 }
+
+func TestCronNext(t *testing.T) {
+	expr := "0/2 * * * * ?"
+	paser := cron.NewParser(
+		cron.Second | cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow | cron.Descriptor,
+	)
+	schedule, err := paser.Parse(expr)
+	assert.NoError(t, err)
+	now := time.Now()
+	t.Logf("%v --> %v\n", now, schedule.Next(now))
+}
