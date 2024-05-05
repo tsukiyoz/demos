@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/tsukaychan/demos/proto";
+option go_package = "github.com/tsukaychan/demos/grpc";
+
+import "inner/inner.proto";
 
 message User {
   int64 id = 1;
@@ -14,18 +16,12 @@ message User {
     string email = 9;
     string phone = 10;
   }
-  Gender gender = 11;
+  gender.Gender gender = 11;
 }
 
 message Address {
   string province = 1;
   string city = 2;
-}
-
-enum Gender {
-  Unknown = 0;
-  Male = 1;
-  Female = 2;
 }
 
 service UserService {
