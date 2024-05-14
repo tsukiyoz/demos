@@ -3,33 +3,40 @@ package grpc
 import (
 	"context"
 
-	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ UserServiceServer = (*UserService)(nil)
 
 type UserService struct {
 	UnimplementedUserServiceServer
+	Name string
 }
 
-func NewUserService() *UserService {
-	return &UserService{}
+func NewUserService(name string) *UserService {
+	return &UserService{
+		Name: name,
+	}
 }
 
 func (svc *UserService) GetByID(ctx context.Context, req *GetByIDReq) (*GetByIDResp, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if ok {
-		return &GetByIDResp{
-			User: &User{
-				Id:   req.Id,
-				Name: "tsukiyo" + md.Get("user")[0],
-			},
-		}, nil
-	}
 	return &GetByIDResp{
 		User: &User{
 			Id:   req.Id,
-			Name: "tsukiyo",
+			Name: "tsukiyo, from " + svc.Name,
 		},
 	}, nil
+}
+
+type FailService struct {
+	UnimplementedUserServiceServer
+}
+
+func NewFailService() *FailService {
+	return &FailService{}
+}
+
+func (svc *FailService) GetByID(ctx context.Context, req *GetByIDReq) (*GetByIDResp, error) {
+	return &GetByIDResp{}, status.Error(codes.Unavailable, "mock service fail")
 }

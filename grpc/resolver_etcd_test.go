@@ -85,7 +85,7 @@ func (s *EtcdTestSuite) TestServer() {
 	}()
 
 	server := grpc.NewServer()
-	RegisterUserServiceServer(server, NewUserService())
+	RegisterUserServiceServer(server, NewUserService("test"))
 
 	err = server.Serve(lis)
 	s.T().Log(err)

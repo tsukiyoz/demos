@@ -7,22 +7,13 @@ import (
 	"testing"
 )
 
-type Node struct {
-	name          string
-	weight, value int
-}
-
-func (n *Node) Invoke() {
-	log.Printf("[%s], initiated a call", n.name)
-}
-
-type Balancer struct {
+type WRRBalancer struct {
 	nodes []*Node
 	total int
 	mu    sync.Mutex
 }
 
-func NewBalancer(ws []int) *Balancer {
+func NewWRRBalancer(ws []int) *WRRBalancer {
 	tot := 0
 	nodes := make([]*Node, 0, len(ws))
 	for i := 0; i < len(ws); i++ {
@@ -32,13 +23,13 @@ func NewBalancer(ws []int) *Balancer {
 			weight: ws[i],
 		})
 	}
-	return &Balancer{
+	return &WRRBalancer{
 		nodes: nodes,
 		total: tot,
 	}
 }
 
-func (b *Balancer) pick() *Node {
+func (b *WRRBalancer) pick() *Node {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
@@ -53,14 +44,14 @@ func (b *Balancer) pick() *Node {
 	return res
 }
 
-func (b *Balancer) Info() {
+func (b *WRRBalancer) Info() {
 	for _, n := range b.nodes {
 		log.Printf("%s: value(%d)\n", n.name, n.value)
 	}
 }
 
 func TestSmoothWRR(t *testing.T) {
-	balancer := NewBalancer([]int{1, 2, 3})
+	balancer := NewWRRBalancer([]int{1, 2, 3})
 
 	// simulate n requests to handle
 	n := 10
