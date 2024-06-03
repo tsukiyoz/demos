@@ -12,13 +12,16 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.6.0
 	github.com/lithammer/shortuuid v3.0.0+incompatible
+	github.com/marusama/cyclicbarrier v1.1.0
 	github.com/nats-io/nats.go v1.34.0
+	github.com/nsqio/go-nsq v1.1.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.9.0
 	go.etcd.io/etcd/client/v3 v3.5.13
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/exporters/zipkin v1.24.0
 	go.opentelemetry.io/otel/sdk v1.24.0
+	golang.org/x/sync v0.6.0
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.33.0
 	gorm.io/driver/mysql v1.5.6
