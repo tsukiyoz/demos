@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -21,11 +22,13 @@ func NewUserService(name string) *UserService {
 }
 
 func (svc *UserService) GetByID(ctx context.Context, req *GetByIDReq) (*GetByIDResp, error) {
+	uid, _ := ctx.Value("uid").(string)
 	return &GetByIDResp{
 		User: &User{
 			Id:   req.Id,
-			Name: "tsukiyo, from " + svc.Name,
+			Name: "lazywoo",
 		},
+		Msg: fmt.Sprintf("uid: %v, from %v", uid, svc.Name),
 	}, nil
 }
 
