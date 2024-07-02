@@ -1,6 +1,4 @@
-package http
-
-import "math/rand"
+package v1
 
 type signal struct{}
 
@@ -10,10 +8,6 @@ type Job struct {
 }
 
 func (j *Job) Execute() error {
-	danger := rand.Intn(100)
-	if danger > 80 {
-		panic("danger operate!")
-	}
 	return j.handleFunc()
 }
 
