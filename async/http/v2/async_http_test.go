@@ -12,10 +12,11 @@ const (
 )
 
 func TestHTTPServer(t *testing.T) {
-	q := make(chan *Job, MaxProcessorNum*4)
+	buflen := 50000
+	q := make(chan *Job, MaxProcessorNum*buflen)
 
 	var workers []*Worker
-	for i := 0; i < MaxProcessorNum; i++ {
+	for i := 0; i < MaxProcessorNum*10000; i++ {
 		workers = append(workers, NewWorker(i+1, q))
 	}
 
@@ -33,11 +34,16 @@ func NewHandler(q chan *Job) *Handler {
 	}
 }
 
-func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("handle http request")
 	j := &Job{
 		done: make(chan signal),
 		fn: func() error {
+			w.WriteHeader(http.StatusOK)
+			// mock execute complex operations
+			//time.Sleep(time.Millisecond * time.Duration(rand.Intn(20)+10))
+			time.Sleep(time.Millisecond * time.Duration(30))
+			//io.WriteString(w, "hello world, async http")
 			w.Write([]byte("hello world, async http"))
 			return nil
 		},
