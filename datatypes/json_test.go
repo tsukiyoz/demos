@@ -21,6 +21,6 @@ func TestJSON(t *testing.T) {
 
 	// 遍历 map
 	for key, value := range result {
-		t.Logf("%s: %v\n", key, value)
+		t.Logf("%v: %v\n", key, value)
 	}
 }
