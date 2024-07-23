@@ -19,6 +19,11 @@ func TestContext(t *testing.T) {
 	var ctxKey CtxKey
 
 	subCtx := context.WithValue(ctx, ctxKey, "Value")
+	subCtx, cancel := context.WithTimeout(subCtx, time.Minute*10)
+	t.Logf("%v\n", subCtx.Err())
+	cancel()
+	t.Logf("%v\n", subCtx.Err())
+	t.Logf("%v\n", subCtx.Done())
 	t.Logf("%v\n", ctx.Value(ctxKey))    // <nil>
 	t.Logf("%v\n", subCtx.Value(ctxKey)) // Value
 
