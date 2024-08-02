@@ -47,7 +47,7 @@ func TestLiveLock(t *testing.T) {
 	t.Logf("go off work, :) \n")
 }
 
-type signal struct{}
+type empty struct{}
 
 var workerNum = 4
 
@@ -68,7 +68,7 @@ func doBroadcastByChan() {
 		startWorker(broadcaster, &wg)
 	}
 
-	broadcaster.Submit(signal{})
+	broadcaster.Submit(empty{})
 	wg.Wait()
 	broadcaster.Close()
 }

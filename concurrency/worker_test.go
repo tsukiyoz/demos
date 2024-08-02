@@ -16,7 +16,7 @@ type Signal struct{}
 type Manager struct {
 	wg      *sync.WaitGroup
 	workers []*Worker
-	inputs  chan signal
+	inputs  chan empty
 	results chan Value
 	ctx     context.Context
 	close   func()
@@ -50,7 +50,7 @@ func (m *Manager) healthz() {
 }
 
 func (m *Manager) GetID() Value {
-	m.inputs <- signal{}
+	m.inputs <- empty{}
 	res := <-m.results
 	return res
 }
@@ -98,7 +98,7 @@ func (w *Worker) GetID() string {
 
 func NewManager(workerNum int) *Manager {
 	mgr := &Manager{
-		inputs:  make(chan signal),
+		inputs:  make(chan empty),
 		results: make(chan Value),
 	}
 	workers := make([]*Worker, 0, workerNum)
