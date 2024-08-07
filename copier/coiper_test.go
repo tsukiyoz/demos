@@ -35,3 +35,29 @@ func TestCopy(t *testing.T) {
 	copier.Copy(&dst, &src)
 	t.Logf("%+v", dst)
 }
+
+func TestCopyToPtr(t *testing.T) {
+	type Src struct {
+		A int
+		B string
+	}
+
+	type Tgt struct {
+		A *int
+		B *string
+	}
+
+	src := Src{
+		A: 1,
+		B: "tsukiyo",
+	}
+
+	a := 2
+	b := "lazywoo"
+	copier.Copy(&src, &Tgt{
+		A: &a,
+		B: &b,
+	})
+
+	t.Logf("%v\n", src)
+}
