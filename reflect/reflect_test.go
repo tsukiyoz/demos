@@ -342,7 +342,7 @@ func IsAssigned(s interface{}) bool {
 	}
 }
 
-func TestIsStructEmpty(t *testing.T) {
+func TestIsAssigned(t *testing.T) {
 	type ReqClass1 struct {
 		Arg11 int
 		Arg12 string
