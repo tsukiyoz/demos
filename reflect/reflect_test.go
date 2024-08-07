@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -309,5 +310,113 @@ func TestPtrFunc(t *testing.T) {
 		t.Logf("%v\n", e)
 	} else {
 		t.Logf("unknown\n")
+	}
+}
+
+// IsAssigned 检查对象是否有被赋值，不检查非导出字段
+func IsAssigned(s interface{}) bool {
+	v := reflect.ValueOf(s)
+	kind := v.Kind()
+
+	switch kind {
+	case reflect.Func:
+		return v.IsNil()
+	case reflect.Ptr:
+		if v.IsNil() {
+			return true
+		}
+		return IsAssigned(v.Elem().Interface())
+	case reflect.Struct:
+		for i := 0; i < v.NumField(); i++ {
+			field := v.Field(i)
+			if !field.CanInterface() {
+				continue
+			}
+			if !IsAssigned(field.Interface()) {
+				return false
+			}
+		}
+		return true
+	default:
+		return v.IsZero()
+	}
+}
+
+func TestIsStructEmpty(t *testing.T) {
+	type ReqClass1 struct {
+		Arg11 int
+		Arg12 string
+		Fn    func()
+		T     time.Time
+	}
+
+	type ReqClass2 struct {
+		Arg21 int
+		Arg22 string
+		*ReqClass1
+	}
+
+	type Req struct {
+		ReqClass1
+		ReqClass2
+	}
+
+	// 各测试用例，方便起见，先不写成 table-driven 的形式
+	passed := IsAssigned(&Req{}) == true
+	passed = passed && IsAssigned(&Req{
+		ReqClass1: ReqClass1{
+			Arg11: 1,
+			Arg12: "123",
+		},
+	}) == false
+	passed = passed && IsAssigned(&Req{
+		ReqClass1: ReqClass1{
+			Fn: nil,
+		},
+	}) == true
+	passed = passed && IsAssigned(&Req{
+		ReqClass1: ReqClass1{
+			Fn: func() {
+				fmt.Println("hello world")
+			},
+		},
+	}) == false
+	passed = passed && IsAssigned(&Req{
+		ReqClass1: ReqClass1{
+			Arg11: 1,
+		},
+		ReqClass2: ReqClass2{
+			Arg21: 1,
+		},
+	}) == false
+	passed = passed && IsAssigned(&Req{
+		ReqClass2: ReqClass2{
+			ReqClass1: &ReqClass1{
+				Arg11: 2,
+			},
+		},
+	}) == false
+	passed = passed && IsAssigned(&Req{
+		ReqClass1: ReqClass1{
+			Arg11: 1,
+		},
+		ReqClass2: ReqClass2{
+			Arg21: 1,
+			ReqClass1: &ReqClass1{
+				Arg11: 2,
+			},
+		},
+	}) == false
+	passed = passed && IsAssigned(&Req{
+		ReqClass1: ReqClass1{
+			T: time.Now(),
+		},
+	}) == true
+
+	// 判断是否通过测试
+	if passed {
+		t.Logf("all tests passed :)")
+	} else {
+		t.Errorf("tests not passed :(")
 	}
 }
