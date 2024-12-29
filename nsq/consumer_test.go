@@ -31,10 +31,11 @@ func TestConsumer(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	t.Log(cfg.LocalAddr.String())
 
 	consumer.AddHandler(&MessageHandler{})
 
-	err = consumer.ConnectToNSQD("127.0.0.1:4150")
+	err = consumer.ConnectToNSQD("127.0.0.1:7760")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,5 +44,7 @@ func TestConsumer(t *testing.T) {
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	<-sigChan
 
-	consumer.Stop()
+	t.Cleanup(func() {
+		consumer.Stop()
+	})
 }

@@ -15,7 +15,6 @@ require (
 	github.com/ecodeclub/ekit v0.0.8
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-sql-driver/mysql v1.7.0
-	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang-queue/queue v0.2.0
 	github.com/google/uuid v1.6.0
 	github.com/hibiken/asynq v0.24.1
@@ -32,7 +31,6 @@ require (
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/exporters/zipkin v1.24.0
 	go.opentelemetry.io/otel/sdk v1.24.0
-	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948
 	golang.org/x/sync v0.8.0
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.34.2
