@@ -1,25 +1,15 @@
 package main
 
 import (
-	"testing"
+	"fmt"
+	"time"
 
 	"github.com/hibiken/asynq"
-	"github.com/stretchr/testify/suite"
 	"github.com/tsukaychan/demos/asynq/tasks"
 )
 
-func TestConsumer(t *testing.T) {
-	suite.Run(t, new(ConsumerTestSuite))
-}
-
-type ConsumerTestSuite struct {
-	suite.Suite
-	server *asynq.Server
-}
-
-func (s *ConsumerTestSuite) SetupSuite() {
-	s.T().Logf("initialing asynq server...\n")
-	s.server = asynq.NewServer(
+func startConsumer() error {
+	server := asynq.NewServer(
 		asynq.RedisClientOpt{
 			Addr: "127.0.0.1:6379",
 		},
@@ -30,16 +20,23 @@ func (s *ConsumerTestSuite) SetupSuite() {
 				"default":  3,
 				"low":      1,
 			},
+			IsFailure: func(err error) bool {
+				return err == tasks.ErrProcessFailed
+			},
+			RetryDelayFunc: func(n int, e error, t *asynq.Task) time.Duration {
+				return asynq.DefaultRetryDelayFunc(n, e, t)
+			},
 		},
 	)
-}
+	defer server.Shutdown()
 
-func (s *ConsumerTestSuite) TestConsumer() {
 	mux := asynq.NewServeMux()
 	mux.HandleFunc(tasks.TypeEmailDelivery, tasks.HandleEmailDeliveryTask)
 	mux.Handle(tasks.TypeImageResize, tasks.NewImageProcessor())
 
-	if err := s.server.Run(mux); err != nil {
-		s.T().Fatalf("could not run server: %v", err)
+	if err := server.Run(mux); err != nil {
+		fmt.Printf("could not run server: %v", err)
 	}
+
+	return nil
 }

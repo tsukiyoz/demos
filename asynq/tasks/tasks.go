@@ -3,11 +3,15 @@ package tasks
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/hibiken/asynq"
 	"log"
 	"time"
+
+	"github.com/hibiken/asynq"
 )
+
+var ErrProcessFailed = fmt.Errorf("process failed")
 
 const (
 	TypeEmailDelivery = "email:deliver"
@@ -43,29 +47,37 @@ func NewImageResizeTask(src string) (*asynq.Task, error) {
 	if err != nil {
 		return nil, err
 	}
-	return asynq.NewTask(TypeImageResize, payload, asynq.MaxRetry(3), asynq.Timeout(20*time.Minute)), nil
+	return asynq.NewTask(TypeImageResize, payload, asynq.MaxRetry(10), asynq.Timeout(20*time.Minute)), nil
 }
 
 func HandleEmailDeliveryTask(ctx context.Context, t *asynq.Task) error {
-	fmt.Printf("got task at %v\n", time.Now().String())
+	fmt.Printf("got task [%s] at %v\n", t.Type(), time.Now().String())
 	var payload EmailDeliveryPayload
 	err := json.Unmarshal(t.Payload(), &payload)
 	if err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
 	fmt.Printf("handled email task %v\n", payload)
+
 	return nil
 }
 
 type ImageProcessor struct{}
 
-func (i *ImageProcessor) ProcessTask(ctx context.Context, task *asynq.Task) error {
+func (i *ImageProcessor) ProcessTask(ctx context.Context, t *asynq.Task) error {
+	fmt.Printf("got task [%s] at %v\n", t.Type(), time.Now().String())
 	var payload ImageResizePayload
-	err := json.Unmarshal(task.Payload(), &payload)
+	err := json.Unmarshal(t.Payload(), &payload)
 	if err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
 	log.Printf("Resizing image: src=%s", payload.SourceURL)
+	// mock failed
+	if time.Now().Second()%3 != 0 {
+		fmt.Printf("failed to process task: %v\n", errors.New("mock failure"))
+		return ErrProcessFailed
+	}
+	fmt.Printf("handled image task %v\n", payload)
 	return nil
 }
 
