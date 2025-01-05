@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
-	inet "github.com/tsukaychan/demos/net"
+	inet "github.com/tsukaychan/demos/net/ip"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 
 	etcdv3 "go.etcd.io/etcd/client/v3"

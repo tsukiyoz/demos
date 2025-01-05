@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 const (
@@ -18,45 +19,53 @@ const (
 
 func runServer() {
 	address := SERVER_IP + ":" + strconv.Itoa(SERVER_PORT)
-	addr, err := net.ResolveUDPAddr("udp", address)
+	lis, err := net.Listen("tcp", address)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	conn, err := net.ListenUDP("udp", addr)
-	if err != nil {
-		panic(err)
-	}
-
-	defer conn.Close()
+	defer lis.Close()
 
 	for {
-		buf := make([]byte, SERVER_RECV_LEN)
-		n, addr, err := conn.ReadFromUDP(buf)
+		conn, err := lis.Accept()
 		if err != nil {
-			fmt.Println("Error: ", err)
+			fmt.Println(err)
 			continue
 		}
 
-		strData := string(buf[:n])
-		fmt.Println("Received: ", strData)
+		defer conn.Close()
 
-		upper := strings.ToUpper(strData)
-		_, err = conn.WriteToUDP([]byte(upper), addr)
-		if err != nil {
-			fmt.Println("Error: ", err)
-			continue
+		for {
+			data := make([]byte, SERVER_RECV_LEN)
+			_, err = conn.Read(data)
+			if err != nil {
+				fmt.Println(err)
+				break
+			}
+
+			strData := string(data)
+			fmt.Println("Received: ", strData)
+
+			upper := strings.ToUpper(strData)
+			_, err = conn.Write([]byte(upper))
+			if err != nil {
+				fmt.Println(err)
+				break
+			}
+
+			fmt.Println("Send: ", upper)
 		}
-
-		fmt.Println("Sent: ", upper)
 	}
 }
 
 func runClient() {
-	serverAddr := SERVER_IP + ":" + strconv.Itoa(SERVER_PORT)
-	conn, err := net.Dial("udp", serverAddr)
+	addr := SERVER_IP + ":" + strconv.Itoa(SERVER_PORT)
+
+	conn, err := net.Dial("tcp", addr)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	defer conn.Close()
@@ -76,18 +85,20 @@ func runClient() {
 
 			n, err = conn.Write([]byte(toWrite))
 			if err != nil {
-				fmt.Println("Error: ", err)
+				fmt.Println(err)
 				os.Exit(1)
 			}
+
+			fmt.Println("Write: ", toWrite)
 
 			buf := make([]byte, SERVER_RECV_LEN)
 			_, err = conn.Read(buf)
 			if err != nil {
-				fmt.Println("Error: ", err)
+				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			fmt.Println("Received: ", string(buf[:n]))
+			fmt.Println("Recv: ", string(buf))
 		}
 	}
 }
@@ -96,12 +107,13 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
+		defer wg.Done()
 		runServer()
-		wg.Done()
 	}()
+	time.Sleep(time.Second)
 	go func() {
+		defer wg.Done()
 		runClient()
-		wg.Done()
 	}()
 
 	wg.Wait()
