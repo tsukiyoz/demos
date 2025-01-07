@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"sync"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -148,6 +149,7 @@ type Lock struct {
 	value      string
 	expiration time.Duration
 	unlock     chan struct{}
+	once       sync.Once
 }
 
 func newLock(rds *redis.Pool, key string, val string, exp time.Duration) *Lock {
@@ -156,6 +158,7 @@ func newLock(rds *redis.Pool, key string, val string, exp time.Duration) *Lock {
 		key:        key,
 		value:      val,
 		expiration: exp,
+		unlock:     make(chan struct{}, 1),
 	}
 }
 
@@ -173,6 +176,7 @@ func (l *Lock) script(ctx context.Context, script string, args ...interface{}) (
 func (l *Lock) AutoRefresh(interval time.Duration, timeout time.Duration) error {
 	ticker := time.NewTicker(interval)
 	retryCh := make(chan struct{}, 1)
+
 	defer func() {
 		ticker.Stop()
 		close(retryCh)
@@ -180,38 +184,61 @@ func (l *Lock) AutoRefresh(interval time.Duration, timeout time.Duration) error 
 
 	for {
 		select {
-		case <-ticker.C:
-			ctx, cancel := context.WithTimeout(context.Background(), timeout)
-			err := l.Refresh(ctx)
-			cancel()
-			if err == context.DeadlineExceeded {
-				select {
-				case retryCh <- struct{}{}:
+		case <-l.unlock:
+			return nil
+		default:
+			select {
+			case <-ticker.C:
+				ctx, cancel := context.WithTimeout(context.Background(), timeout)
+				err := l.Refresh(ctx)
+				cancel()
+				switch err {
+				case context.DeadlineExceeded:
+					select {
+					case retryCh <- struct{}{}:
+					default:
+					}
+				case ErrLockNotHold:
+					select {
+					case <-l.unlock:
+						return nil
+					default:
+						return nil
+					}
+				case nil:
+					continue
 				default:
+					return err
 				}
-				continue
-			} else {
-				return err
-			}
-		case <-retryCh:
-			ctx, cancel := context.WithTimeout(context.Background(), timeout)
-			err := l.Refresh(ctx)
-			cancel()
-			if err == context.DeadlineExceeded {
-				select {
-				case retryCh <- struct{}{}:
+			case <-retryCh:
+				ctx, cancel := context.WithTimeout(context.Background(), timeout)
+				err := l.Refresh(ctx)
+				cancel()
+				switch err {
+				case nil:
+					continue
+				case context.DeadlineExceeded:
+					select {
+					case retryCh <- struct{}{}:
+					default:
+					}
+				case ErrLockNotHold:
+					select {
+					case <-l.unlock:
+						return nil
+					default:
+						return nil
+					}
 				default:
+					return err
 				}
-				continue
-			} else {
-				return err
 			}
 		}
 	}
 }
 
 func (l *Lock) Refresh(ctx context.Context) error {
-	res, err := l.script(ctx, luaRefresh, l.key, l.value)
+	res, err := l.script(ctx, luaRefresh, l.key, l.value, l.expiration.Seconds())
 	if err != nil {
 		return err
 	}
@@ -223,6 +250,15 @@ func (l *Lock) Refresh(ctx context.Context) error {
 
 func (l *Lock) Unlock(ctx context.Context) error {
 	res, err := l.script(ctx, luaUnlock, l.key, l.value)
+	defer func() {
+		l.once.Do(func() {
+			select {
+			case l.unlock <- struct{}{}:
+				close(l.unlock)
+			default:
+			}
+		})
+	}()
 	if err == redis.ErrNil {
 		return ErrLockNotHold
 	}
