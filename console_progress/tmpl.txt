@@ -1,1 +1,0 @@
-{{ green "Installation: " }} {{ bar . "<" "-" (cycle . "O" "0" | yellow ) " " ">" white}} {{speed . | green }} {{percent . | green}}
