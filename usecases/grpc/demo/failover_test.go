@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"sync"
+	"syscall"
 	"testing"
 	"time"
 
@@ -147,8 +148,8 @@ func (f *FailoverTestSuite) startServer(addr string, svc UserServiceServer) {
 	err = srv.Serve(lis)
 	f.T().Log(err)
 
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt, os.Kill)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
 	// quit

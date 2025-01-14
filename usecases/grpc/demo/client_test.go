@@ -26,7 +26,7 @@ func TestGrpcClient(t *testing.T) {
 
 	// mock get user id from jwt
 	userID := uuid.New().String()
-	ctx = context.WithValue(ctx, "uid", userID)
+	ctx = context.WithValue(ctx, vkey{}, userID)
 
 	resp, err := client.GetByID(ctx, &GetByIDReq{Id: 123})
 	require.NoError(t, err)

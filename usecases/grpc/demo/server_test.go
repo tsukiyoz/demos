@@ -27,12 +27,14 @@ func TestUserServiceClient(t *testing.T) {
 	require.NoError(t, err)
 }
 
+type vkey struct{}
+
 var authServerInterceptor grpc.UnaryServerInterceptor = func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {
 		uid := md.Get("uid")
 		if len(uid) != 0 {
-			ctx = context.WithValue(ctx, "uid", uid[0])
+			ctx = context.WithValue(ctx, vkey{}, uid[0])
 		}
 	}
 	return handler(ctx, req)

@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"syscall"
 	"testing"
 	"time"
 
@@ -47,6 +48,7 @@ func (s *EtcdTestSuite) TestServer() {
 	kaCtx, cancel := context.WithTimeout(context.Background(), time.Second)
 	var ttl int64 = 6
 	lease, err := s.client.Grant(kaCtx, ttl)
+	cancel()
 	require.NoError(s.T(), err)
 
 	addr := "127.0.0.1:8090"
@@ -90,8 +92,8 @@ func (s *EtcdTestSuite) TestServer() {
 	err = server.Serve(lis)
 	s.T().Log(err)
 
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt, os.Kill)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
 	ctx, cancel = context.WithTimeout(context.Background(), time.Second)
@@ -100,6 +102,7 @@ func (s *EtcdTestSuite) TestServer() {
 	s.T().Log("shutdown server ...")
 	kaCancel()
 	err = em.DeleteEndpoint(ctx, key)
+	require.NoError(s.T(), err)
 	server.GracefulStop()
 	s.client.Close()
 	s.T().Log("server exited")

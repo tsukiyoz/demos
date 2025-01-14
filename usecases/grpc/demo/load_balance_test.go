@@ -5,12 +5,13 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"syscall"
 	"testing"
 	"time"
 
 	"google.golang.org/grpc/credentials/insecure"
 
-	_ "github.com/lazywoo/demos/usecases/grpc/balancer/wrr"
+	_ "github.com/lazywoo/demos/usecases/grpc/demo/balancer/wrr"
 	etcdv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
@@ -100,8 +101,8 @@ func (b *BalancerTestSuite) startWeightedServer(name, addr string, weight int) {
 	err = srv.Serve(lis)
 	b.T().Log(err)
 
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt, os.Kill)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
 	// quit
