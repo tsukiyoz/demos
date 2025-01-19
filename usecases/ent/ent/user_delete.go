@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/lazywoo/demos/usecases/ent/ent/predicate"
-	"github.com/lazywoo/demos/usecases/ent/ent/user"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/predicate"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/user"
 )
 
 // UserDelete is the builder for deleting a User entity.

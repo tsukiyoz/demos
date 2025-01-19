@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/lazywoo/demos/usecases/ent/ent/group"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/group"
 )
 
 // Group is the model entity for the Group schema.

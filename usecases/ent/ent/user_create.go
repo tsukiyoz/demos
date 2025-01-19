@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/lazywoo/demos/usecases/ent/ent/user"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/user"
 )
 
 // UserCreate is the builder for creating a User entity.

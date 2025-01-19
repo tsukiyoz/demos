@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/lazywoo/demos/usecases/ent/ent/car"
-	"github.com/lazywoo/demos/usecases/ent/ent/group"
-	"github.com/lazywoo/demos/usecases/ent/ent/user"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/car"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/group"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.

@@ -11,7 +11,7 @@ import (
 
 	"google.golang.org/grpc/credentials/insecure"
 
-	_ "github.com/lazywoo/demos/usecases/grpc/demo/balancer/wrr"
+	_ "github.com/tsukiyoz/demos/usecases/grpc/demo/balancer/wrr"
 	etcdv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"go.etcd.io/etcd/client/v3/naming/resolver"

@@ -4,7 +4,7 @@ package car
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/lazywoo/demos/usecases/ent/ent/predicate"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

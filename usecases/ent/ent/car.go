@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/lazywoo/demos/usecases/ent/ent/car"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/car"
 )
 
 // Car is the model entity for the Car schema.

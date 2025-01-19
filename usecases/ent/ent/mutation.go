@@ -10,8 +10,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/lazywoo/demos/usecases/ent/ent/predicate"
-	"github.com/lazywoo/demos/usecases/ent/ent/user"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/predicate"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/user"
 )
 
 const (

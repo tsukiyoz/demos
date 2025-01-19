@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package gender;
 
-option go_package = "github.com/lazywoo/demos/grpc/inner";
+option go_package = "github.com/tsukiyoz/demos/grpc/inner";
 
 enum Gender {
   Unknown = 0;

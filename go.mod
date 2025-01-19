@@ -1,4 +1,4 @@
-module github.com/lazywoo/demos
+module github.com/tsukiyoz/demos
 
 go 1.22.0
 

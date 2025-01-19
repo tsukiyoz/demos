@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/hibiken/asynq"
-	"github.com/lazywoo/demos/usecases/asynq/tasks"
+	"github.com/tsukiyoz/demos/usecases/asynq/tasks"
 )
 
 func startPublisher() error {

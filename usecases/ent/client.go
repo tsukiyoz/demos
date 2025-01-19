@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/lazywoo/demos/usecases/ent/ent/user"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/user"
 
-	"github.com/lazywoo/demos/usecases/ent/ent"
+	"github.com/tsukiyoz/demos/usecases/ent/ent"
 
 	_ "github.com/go-sql-driver/mysql"
 )

@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/hibiken/asynq"
-	"github.com/lazywoo/demos/usecases/asynq/tasks"
 	"github.com/stretchr/testify/suite"
+	"github.com/tsukiyoz/demos/usecases/asynq/tasks"
 )
 
 func TestPublisher(t *testing.T) {

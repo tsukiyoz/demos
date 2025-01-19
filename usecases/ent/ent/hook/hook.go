@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/lazywoo/demos/usecases/ent/ent"
+	"github.com/tsukiyoz/demos/usecases/ent/ent"
 )
 
 // The CarFunc type is an adapter to allow the use of ordinary

@@ -1,4 +1,4 @@
-module github.com/lazywoo/study/demo/mongo
+module github.com/tsukiyoz/study/demo/mongo
 
 go 1.21.4
 

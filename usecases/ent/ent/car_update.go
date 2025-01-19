@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/lazywoo/demos/usecases/ent/ent/car"
-	"github.com/lazywoo/demos/usecases/ent/ent/predicate"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/car"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/predicate"
 )
 
 // CarUpdate is the builder for updating Car entities.

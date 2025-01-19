@@ -7,7 +7,7 @@
 package grpc
 
 import (
-	inner "github.com/lazywoo/demos/usecases/grpc/demo/inner"
+	inner "github.com/tsukiyoz/demos/usecases/grpc/demo/inner"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

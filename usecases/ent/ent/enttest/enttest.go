@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/lazywoo/demos/usecases/ent/ent"
+	"github.com/tsukiyoz/demos/usecases/ent/ent"
 	// required by schema hooks.
-	_ "github.com/lazywoo/demos/usecases/ent/ent/runtime"
+	_ "github.com/tsukiyoz/demos/usecases/ent/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/lazywoo/demos/usecases/ent/ent/migrate"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/migrate"
 )
 
 type (

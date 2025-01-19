@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/hibiken/asynq"
-	"github.com/lazywoo/demos/usecases/asynq/tasks"
 	"github.com/stretchr/testify/suite"
+	"github.com/tsukiyoz/demos/usecases/asynq/tasks"
 )
 
 func TestConsumer(t *testing.T) {

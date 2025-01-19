@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/lazywoo/demos/usecases/ent/ent/group"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/group"
 )
 
 // GroupCreate is the builder for creating a Group entity.

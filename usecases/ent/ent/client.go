@@ -9,14 +9,14 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/lazywoo/demos/usecases/ent/ent/migrate"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/lazywoo/demos/usecases/ent/ent/car"
-	"github.com/lazywoo/demos/usecases/ent/ent/group"
-	"github.com/lazywoo/demos/usecases/ent/ent/user"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/car"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/group"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/user"
 )
 
 // Client is the client that holds all ent builders.

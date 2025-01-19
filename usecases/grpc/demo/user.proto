@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/lazywoo/demos/grpc";
+option go_package = "github.com/tsukiyoz/demos/grpc";
 
 import "inner/inner.proto";
 

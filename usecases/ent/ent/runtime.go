@@ -3,8 +3,8 @@
 package ent
 
 import (
-	"github.com/lazywoo/demos/usecases/ent/ent/schema"
-	"github.com/lazywoo/demos/usecases/ent/ent/user"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/schema"
+	"github.com/tsukiyoz/demos/usecases/ent/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

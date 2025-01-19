@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
-	inet "github.com/lazywoo/demos/usecases/net/ip"
+	inet "github.com/tsukiyoz/demos/usecases/net/ip"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 
 	etcdv3 "go.etcd.io/etcd/client/v3"

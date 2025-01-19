@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/lazywoo/demos/algo/timewheel"
+	"github.com/tsukiyoz/demos/algo/timewheel"
 )
 
 func TestAdd(t *testing.T) {
