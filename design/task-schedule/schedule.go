@@ -5,29 +5,29 @@ import (
 	"fmt"
 )
 
-type Scheduler struct {
-	taskCh       chan *Task
-	execute      ExecuteStrategy
+type Scheduler[T Task] struct {
+	taskCh       chan T
+	execute      ExecuteStrategy[T]
 	paralism     chan struct{}
-	stateHandler map[TaskStatus]TaskHandler
+	stateHandler map[TaskStatus]TaskHandler[T]
 }
 
-type Option func(*Scheduler)
+type Option[T Task] func(*Scheduler[T])
 
-func WithTaskDefaultSize(size int) Option {
-	return func(s *Scheduler) {
-		s.taskCh = make(chan *Task, size)
+func WithTaskDefaultSize[T Task](size int) Option[T] {
+	return func(s *Scheduler[T]) {
+		s.taskCh = make(chan T, size)
 	}
 }
 
-func WithExecuteStrategy(es ExecuteStrategy) Option {
-	return func(s *Scheduler) {
+func WithExecuteStrategy[T Task](es ExecuteStrategy[T]) Option[T] {
+	return func(s *Scheduler[T]) {
 		s.execute = es
 	}
 }
 
-func WithParallelism(size int) Option {
-	return func(s *Scheduler) {
+func WithParallelism[T Task](size int) Option[T] {
+	return func(s *Scheduler[T]) {
 		if size <= 0 {
 			size = defaultParallel
 		}
@@ -40,10 +40,12 @@ const (
 	defaultParallel = 10
 )
 
-func NewScheduler(handler map[TaskStatus]TaskHandler, opts ...Option) *Scheduler {
-	s := &Scheduler{
-		taskCh:       make(chan *Task, defaultTaskSize),
-		execute:      NewParallelStrategy(),
+type TaskHandler[T Task] func(T) error
+
+func NewScheduler[T Task](handler map[TaskStatus]TaskHandler[T], opts ...Option[T]) *Scheduler[T] {
+	s := &Scheduler[T]{
+		taskCh:       make(chan T, defaultTaskSize),
+		execute:      NewParallelStrategy[T](),
 		paralism:     make(chan struct{}, defaultParallel),
 		stateHandler: handler,
 	}
@@ -54,11 +56,11 @@ func NewScheduler(handler map[TaskStatus]TaskHandler, opts ...Option) *Scheduler
 	return s
 }
 
-func (s *Scheduler) AddTask(task *Task) {
+func (s *Scheduler[T]) AddTask(task T) {
 	s.taskCh <- task
 }
 
-func (s *Scheduler) Close() {
+func (s *Scheduler[T]) Close() {
 	close(s.taskCh)
 	ps := len(s.paralism)
 	for i := 0; i < ps; i++ {
@@ -66,7 +68,7 @@ func (s *Scheduler) Close() {
 	}
 }
 
-func (s *Scheduler) run() {
+func (s *Scheduler[T]) run() {
 	for task := range s.taskCh {
 		s.paralism <- struct{}{}
 
@@ -75,28 +77,24 @@ func (s *Scheduler) run() {
 				<-s.paralism
 			}()
 			if err := s.execute(s, task); err != nil {
-				fmt.Printf("task %d failed: %v\n", task.ID, err)
+				fmt.Printf("task %d failed: %v\n", task.ID(), err)
 				return
 			}
-			if task.Callback != nil {
-				if err := task.Callback(task); err != nil {
-					fmt.Printf("task %d callback failed: %v\n", task.ID, err)
+			if callback := task.Callback(); callback != nil {
+				if err := callback(task); err != nil {
+					fmt.Printf("task %d callback failed: %v\n", task.ID(), err)
 				}
 			}
 		}()
 	}
 }
 
-type ExecuteStrategy func(s *Scheduler, t *Task) error
+type ExecuteStrategy[T Task] func(s *Scheduler[T], t T) error
 
-func NewFallthroughStrategy() ExecuteStrategy {
-	return func(s *Scheduler, t *Task) error {
-		for {
-			_, next := t.Status.Next()
-			if !next {
-				return nil
-			}
-			handler, ok := s.stateHandler[t.Status]
+func NewFallthroughStrategy[T Task]() ExecuteStrategy[T] {
+	return func(s *Scheduler[T], t T) error {
+		for t.Next() {
+			handler, ok := s.stateHandler[t.Status()]
 			if !ok {
 				return errors.New("unknown status")
 			}
@@ -105,12 +103,13 @@ func NewFallthroughStrategy() ExecuteStrategy {
 				return err
 			}
 		}
+		return nil
 	}
 }
 
-func NewParallelStrategy() ExecuteStrategy {
-	return func(s *Scheduler, t *Task) error {
-		handler, ok := s.stateHandler[t.Status]
+func NewParallelStrategy[T Task]() ExecuteStrategy[T] {
+	return func(s *Scheduler[T], t T) error {
+		handler, ok := s.stateHandler[t.Status()]
 		if !ok {
 			return errors.New("unknown status")
 		}
@@ -118,11 +117,9 @@ func NewParallelStrategy() ExecuteStrategy {
 		if err != nil {
 			return err
 		}
-		_, next := t.Status.Next()
-		if !next {
-			return nil
+		if t.Next() {
+			go func() { s.AddTask(t) }()
 		}
-		go func() { s.AddTask(t) }()
 		return nil
 	}
 }
