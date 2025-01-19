@@ -7,7 +7,7 @@ import (
 )
 
 func TestScheduler_Run(t *testing.T) {
-	scheduler := NewScheduler()
+	scheduler := NewScheduler(stateHandler)
 	defer scheduler.Close()
 
 	printTaskStatus := func(task *Task) error {

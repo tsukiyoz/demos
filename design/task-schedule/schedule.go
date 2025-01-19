@@ -6,9 +6,10 @@ import (
 )
 
 type Scheduler struct {
-	taskCh   chan *Task
-	execute  ExecuteStrategy
-	paralism chan struct{}
+	taskCh       chan *Task
+	execute      ExecuteStrategy
+	paralism     chan struct{}
+	stateHandler map[TaskStatus]TaskHandler
 }
 
 type Option func(*Scheduler)
@@ -39,11 +40,12 @@ const (
 	defaultParallel = 10
 )
 
-func NewScheduler(opts ...Option) *Scheduler {
+func NewScheduler(handler map[TaskStatus]TaskHandler, opts ...Option) *Scheduler {
 	s := &Scheduler{
-		taskCh:   make(chan *Task, defaultTaskSize),
-		execute:  NewParallelStrategy(),
-		paralism: make(chan struct{}, defaultParallel),
+		taskCh:       make(chan *Task, defaultTaskSize),
+		execute:      NewParallelStrategy(),
+		paralism:     make(chan struct{}, defaultParallel),
+		stateHandler: handler,
 	}
 	for _, opt := range opts {
 		opt(s)
@@ -94,7 +96,7 @@ func NewFallthroughStrategy() ExecuteStrategy {
 			if !next {
 				return nil
 			}
-			handler, ok := stateHandler[t.Status]
+			handler, ok := s.stateHandler[t.Status]
 			if !ok {
 				return errors.New("unknown status")
 			}
@@ -108,7 +110,7 @@ func NewFallthroughStrategy() ExecuteStrategy {
 
 func NewParallelStrategy() ExecuteStrategy {
 	return func(s *Scheduler, t *Task) error {
-		handler, ok := stateHandler[t.Status]
+		handler, ok := s.stateHandler[t.Status]
 		if !ok {
 			return errors.New("unknown status")
 		}
