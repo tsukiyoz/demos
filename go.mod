@@ -2,8 +2,6 @@ module github.com/tsukiyoz/demos
 
 go 1.22.0
 
-toolchain go1.23.4
-
 require (
 	entgo.io/ent v0.13.1
 	github.com/IBM/sarama v1.43.0
@@ -17,7 +15,6 @@ require (
 	github.com/ecodeclub/ekit v0.0.8
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-sql-driver/mysql v1.7.0
-	github.com/golang-jwt/jwt/v4 v4.5.1
 	github.com/golang-queue/queue v0.2.0
 	github.com/gomodule/redigo v1.9.2
 	github.com/google/uuid v1.6.0
@@ -36,7 +33,6 @@ require (
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/exporters/zipkin v1.24.0
 	go.opentelemetry.io/otel/sdk v1.24.0
-	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
 	golang.org/x/sync v0.10.0
 	golang.org/x/sys v0.29.0
 	google.golang.org/grpc v1.64.0
@@ -44,6 +40,8 @@ require (
 	gorm.io/driver/mysql v1.5.6
 	gorm.io/gorm v1.25.9
 )
+
+require github.com/hashicorp/go-uuid v1.0.3 // indirect
 
 require (
 	ariga.io/atlas v0.19.1-0.20240203083654-5948b60a8e43 // indirect
@@ -99,8 +97,7 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
-	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/hashicorp/go-uuid v1.0.3 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect; indirectgithub.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
 	github.com/jcmturner/dnsutils/v2 v2.0.0 // indirect
