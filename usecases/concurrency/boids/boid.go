@@ -95,14 +95,6 @@ func (b *Boid) moveOne() {
 	}
 	boidMap[int(b.position.x)][int(b.position.y)] = b.id
 	lock.Unlock()
-
-	// next := b.position.Add(b.velocity)
-	// if next.x < 0 || next.x >= screenWidth {
-	// 	b.velocity = Vector{x: -b.velocity.x, y: b.velocity.y}
-	// }
-	// if next.y < 0 || next.y >= screenHeight {
-	// 	b.velocity = Vector{x: b.velocity.x, y: -b.velocity.y}
-	// }
 }
 
 func createBoid(id int) {
