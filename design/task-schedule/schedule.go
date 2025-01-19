@@ -2,7 +2,6 @@ package taskschedule
 
 import (
 	"errors"
-	"fmt"
 )
 
 type Scheduler[T Task] struct {
@@ -10,6 +9,8 @@ type Scheduler[T Task] struct {
 	execute      ExecuteStrategy[T]
 	paralism     chan struct{}
 	stateHandler map[TaskStatus]TaskHandler[T]
+	afterExec    func(T)
+	onError      func(T, error)
 }
 
 type Option[T Task] func(*Scheduler[T])
@@ -35,6 +36,18 @@ func WithParallelism[T Task](size int) Option[T] {
 	}
 }
 
+func WithAfterExec[T Task](fn func(T)) Option[T] {
+	return func(s *Scheduler[T]) {
+		s.afterExec = fn
+	}
+}
+
+func WithOnError[T Task](fn func(T, error)) Option[T] {
+	return func(s *Scheduler[T]) {
+		s.onError = fn
+	}
+}
+
 const (
 	defaultTaskSize = 10
 	defaultParallel = 10
@@ -56,7 +69,7 @@ func NewScheduler[T Task](handler map[TaskStatus]TaskHandler[T], opts ...Option[
 	return s
 }
 
-func (s *Scheduler[T]) AddTask(task T) {
+func (s *Scheduler[T]) Submit(task T) {
 	s.taskCh <- task
 }
 
@@ -76,14 +89,12 @@ func (s *Scheduler[T]) run() {
 			defer func() {
 				<-s.paralism
 			}()
-			if err := s.execute(s, task); err != nil {
-				fmt.Printf("task %d failed: %v\n", task.ID(), err)
-				return
+			err := s.execute(s, task)
+			if s.afterExec != nil {
+				defer s.afterExec(task)
 			}
-			if callback := task.Callback(); callback != nil {
-				if err := callback(task); err != nil {
-					fmt.Printf("task %d callback failed: %v\n", task.ID(), err)
-				}
+			if err != nil && s.onError != nil {
+				s.onError(task, err)
 			}
 		}()
 	}
@@ -118,7 +129,7 @@ func NewParallelStrategy[T Task]() ExecuteStrategy[T] {
 			return err
 		}
 		if t.Next() {
-			go func() { s.AddTask(t) }()
+			go func() { s.Submit(t) }()
 		}
 		return nil
 	}
