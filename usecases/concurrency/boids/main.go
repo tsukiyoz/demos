@@ -10,7 +10,7 @@ import (
 const (
 	screenWidth, screenHeight = 640, 360
 	boidCount                 = 500
-	viewRadius                = 10
+	viewRadius                = 12
 	adjRate                   = 0.015
 	vMax                      = 1
 )
