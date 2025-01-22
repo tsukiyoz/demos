@@ -15,9 +15,9 @@ require (
 	github.com/ecodeclub/ekit v0.0.8
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-sql-driver/mysql v1.7.0
-	github.com/golang-queue/queue v0.2.0
 	github.com/gomodule/redigo v1.9.2
 	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/hajimehoshi/ebiten/v2 v2.8.6
 	github.com/hibiken/asynq v0.24.1
 	github.com/jinzhu/copier v0.4.0
@@ -41,7 +41,10 @@ require (
 	gorm.io/gorm v1.25.9
 )
 
-require github.com/hashicorp/go-uuid v1.0.3 // indirect
+require (
+	github.com/hashicorp/go-uuid v1.0.3 // indirect
+	go.uber.org/goleak v1.2.1 // indirect
+)
 
 require (
 	ariga.io/atlas v0.19.1-0.20240203083654-5948b60a8e43 // indirect
@@ -109,7 +112,6 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
