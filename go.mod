@@ -11,6 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.5
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.2
 	github.com/charmbracelet/bubbletea v1.2.4
+	github.com/coder/websocket v1.8.12
 	github.com/dustin/go-broadcast v0.0.0-20211018055107-71439988bd91
 	github.com/ecodeclub/ekit v0.0.8
 	github.com/gin-gonic/gin v1.9.1
