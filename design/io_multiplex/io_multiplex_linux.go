@@ -1,4 +1,6 @@
-package epoll
+//go:build linux
+
+package iomultiplex
 
 import (
 	"crypto/tls"
