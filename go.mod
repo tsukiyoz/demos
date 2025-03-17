@@ -154,6 +154,7 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/redis/go-redis/v9 v9.5.3 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
+	github.com/robfig/cron v1.2.0
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
