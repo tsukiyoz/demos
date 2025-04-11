@@ -16,7 +16,7 @@ func TestHTTPServer(t *testing.T) {
 	q := make(chan *Job, MaxProcessorNum*buflen)
 
 	var workers []*Worker
-	for i := 0; i < MaxProcessorNum*10000; i++ {
+	for i := range MaxProcessorNum * 10000 {
 		workers = append(workers, NewWorker(i+1, q))
 	}
 
@@ -41,9 +41,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fn: func() error {
 			w.WriteHeader(http.StatusOK)
 			// mock execute complex operations
-			//time.Sleep(time.Millisecond * time.Duration(rand.Intn(20)+10))
+			// time.Sleep(time.Millisecond * time.Duration(rand.Intn(20)+10))
 			time.Sleep(time.Millisecond * time.Duration(30))
-			//io.WriteString(w, "hello world, async http")
+			// io.WriteString(w, "hello world, async http")
 			w.Write([]byte("hello world, async http"))
 			return nil
 		},

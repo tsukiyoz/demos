@@ -39,7 +39,7 @@ func main() {
 	cc := []string{"抄送地址", "抄送地址1"}
 	bcc := []string{"密送地址", "密送地址1"}
 	subject := "test Golang to sendmail"
-	date := fmt.Sprintf("%s", time.Now().Format(time.RFC1123Z))
+	date := time.Now().Format(time.RFC1123Z)
 	mailtype := "html"
 	replyToAddress := "a***@example.net"
 	body := "<html><body><h3>Test send to email</h3></body></html>"

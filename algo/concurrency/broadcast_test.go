@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/dustin/go-broadcast"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/dustin/go-broadcast"
 )
 
 func TestLiveLock(t *testing.T) {
@@ -52,7 +53,6 @@ type empty struct{}
 var workerNum = 4
 
 func BenchmarkBroadcastByChan(b *testing.B) {
-
 }
 
 func TestBroadcastByChan(t *testing.T) {

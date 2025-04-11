@@ -3,13 +3,14 @@ package mongo
 import (
 	"context"
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"testing"
-	"time"
 )
 
 func TestMongoUpsert(t *testing.T) {
@@ -21,10 +22,8 @@ func TestMongoUpsert(t *testing.T) {
 			fmt.Println(startedEvent.Command)
 		},
 		Succeeded: func(ctx context.Context, succeededEvent *event.CommandSucceededEvent) {
-
 		},
 		Failed: func(ctx context.Context, failedEvent *event.CommandFailedEvent) {
-
 		},
 	}
 
@@ -82,10 +81,8 @@ func TestMongoTransaction(t *testing.T) {
 			fmt.Println(startedEvent.Command)
 		},
 		Succeeded: func(ctx context.Context, succeededEvent *event.CommandSucceededEvent) {
-
 		},
 		Failed: func(ctx context.Context, failedEvent *event.CommandFailedEvent) {
-
 		},
 	}
 
@@ -128,7 +125,7 @@ func TestMongoTransaction(t *testing.T) {
 			return nil, err
 		}
 
-		//return nil, errors.New("mock error")
+		// return nil, errors.New("mock error")
 
 		_, err = collection.UpdateOne(tx, bson.M{"id": 1}, bson.M{"$set": bson.M{
 			"title":   "new title",

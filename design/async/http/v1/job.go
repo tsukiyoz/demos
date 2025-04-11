@@ -17,8 +17,5 @@ func (j *Job) Done() {
 }
 
 func (j *Job) Wait() {
-	select {
-	case <-j.done:
-		return
-	}
+	<-j.done
 }

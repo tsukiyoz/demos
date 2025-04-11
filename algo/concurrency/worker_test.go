@@ -10,8 +10,10 @@ import (
 	"github.com/google/uuid"
 )
 
-type Value string
-type Signal struct{}
+type (
+	Value  string
+	Signal struct{}
+)
 
 type Manager struct {
 	wg      *sync.WaitGroup
@@ -78,17 +80,11 @@ func (w *Worker) start(wg *sync.WaitGroup) {
 	wg.Add(1)
 	fmt.Printf("worker[%d] started\n", w.ID)
 
-	for {
-		select {
-		case _, ok := <-w.mgr.inputs:
-			if ok {
-				w.mgr.results <- Value(w.GetID())
-			} else {
-				fmt.Printf("worker[%d] quit...\n", w.ID)
-				return
-			}
-		}
+	for range w.mgr.inputs {
+		w.data <- Value(w.GetID())
 	}
+
+	fmt.Printf("worker[%d] quit....\n", w.ID)
 }
 
 func (w *Worker) GetID() string {

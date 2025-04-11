@@ -26,17 +26,17 @@ func (wk *Worker) handleCrash() {
 }
 
 func (wk *Worker) run() {
-	//fmt.Printf("worker %d is running\n", wk.id)
+	// fmt.Printf("worker %d is running\n", wk.id)
 	for {
 		select {
 		case j := <-wk.q:
-			//fmt.Printf("worker %d get a job\n", wk.id)
+			// fmt.Printf("worker %d get a job\n", wk.id)
 			func() {
 				defer wk.handleCrash()
 				_ = wk.exec(j)
 			}()
 			j.Done()
-			//fmt.Printf("worker %d finished a job\n", wk.id)
+			// fmt.Printf("worker %d finished a job\n", wk.id)
 		}
 	}
 }
