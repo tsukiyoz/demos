@@ -1,6 +1,7 @@
 package v2
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -17,7 +18,7 @@ func TestHTTPServer(t *testing.T) {
 
 	var workers []*Worker
 	for i := range MaxProcessorNum * 10000 {
-		workers = append(workers, NewWorker(i+1, q))
+		workers = append(workers, NewWorker(context.Background(), i+1, q))
 	}
 
 	http.Handle("/", NewHandler(q))
